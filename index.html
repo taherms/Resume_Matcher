@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ATS Resume Matcher & Google Drive / Gmail Suite</title>
+    <meta name="description" content="Evaluate resumes against job descriptions, calculate match score, generate ATS-optimized updated resumes, organize master copies in Google Drive, and draft cover letters and Gmail applications." />
+    <meta property="og:title" content="ATS Resume Matcher & Google Drive / Gmail Suite" />
+    <meta property="og:description" content="Evaluate resumes against job descriptions, calculate match score, generate ATS-optimized updated resumes, organize master copies in Google Drive, and draft cover letters and Gmail applications." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      // Apply the last used theme before first paint (falls back to the OS preference)
+      (function () {
+        var theme;
+        try {
+          theme = localStorage.getItem('ats_theme');
+        } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+  </head>
+  <body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
