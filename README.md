@@ -2,41 +2,47 @@
 
 A powerful, full-stack AI-driven application designed to analyze resumes against Job Descriptions, calculate precise ATS match scores, generate tailored cover letters, verify technical skills, and seamlessly integrate with **Google Drive**, **Gmail**, **GitHub**, and **LinkedIn**.
 
+![Main Dashboard](docs/screenshots/main_dashboard.png)
+
 ---
 
-## 🌟 Key Features
+## 📸 Screenshots & Feature Walkthrough
 
 ### 1. 🎯 ATS Resume Matcher & AI Score Engine
-- **File Parsing Support**: Upload resumes in `.pdf`, `.docx`, or `.txt` formats, or paste resume text directly.
-- **AI Matching**: Powered by **Google Gemini AI** (`@google/genai`) to evaluate resume content against target Job Descriptions.
-- **Detailed Feedback**:
-  - Overall ATS Compatibility Score (%)
-  - Keyword Matching & Missing Critical Keywords Breakdown
-  - Formatting & Readability Assessment
-  - Actionable Improvement Recommendations
+Analyze your resume against any Job Description using Google Gemini AI. Get instant keyword matching, missing skill identification, formatting feedback, and actionable suggestions.
 
-### 2. 📊 Score History & Analytics
-- Interactive visual trends powered by **Recharts**.
-- Track your resume score progression over time across different job roles and revisions.
+![ATS Score Breakdown](docs/screenshots/ats_score_breakdown.png)
 
-### 3. 🛠️ Interactive AI Skill Verification
-- Test and verify technical skills mentioned in your resume.
-- Automatically generates customized skill quizzes and proficiency tests powered by Gemini AI.
+### 2. 📑 Multi-Resume Comparison & Progress Tracking
+Compare multiple resume variations side-by-side to find the best match for a given role, and track historical score improvements over time.
 
-### 4. ✉️ AI Cover Letter & Email Suite
-- **Tailored Cover Letters**: Auto-generate targeted cover letters structured specifically for the position and company.
-- **Gmail Outreach**: Draft and send application emails directly from the web app using integrated Google authentication.
+![Resume Match Comparison](docs/screenshots/ats_resumes_comparison.png)
 
-### 5. 📂 Google Drive Workspace Integration
-- Connect your **Google Drive** using Google OAuth 2.0.
-- Browse Drive files, import stored resumes directly, and save generated cover letters or tailored documents back to Drive.
+### 3. ✉️ AI Cover Letter & Gmail Suite
+Automatically generate customized cover letters and application emails tailored to specific job postings, with direct integration to draft and send via Gmail.
 
-### 6. 🌐 Social & Professional Profile Integration
-- **GitHub Integration**: Import repository stats, top languages, and projects to enrich your ATS matching profile.
-- **LinkedIn Integration**: Sync skills and experience overview for comprehensive application tailoring.
+![Cover Letter & Gmail Draft](docs/screenshots/cover_letter_gmail_draft.png)
 
-### 7. 👁️ Live Resume Preview & Viewer
-- Rich resume modal preview supporting direct text inspection and formatted document rendering (`mammoth`, `docx`).
+### 4. 🛠️ Interactive AI Skill Verification
+Test and verify technical skills highlighted in your resume. Generates customized interactive skill quizzes powered by Gemini AI.
+
+![Skill Verification Modal](docs/screenshots/verify_skills_modal.png)
+
+### 5. 🌐 GitHub & LinkedIn Profile Integration
+Sync your GitHub repository statistics and LinkedIn skills directly to enrich your ATS candidate profile.
+
+![Profiles Integration Modal](docs/screenshots/profiles_connect_modal.png)
+
+---
+
+## 🌟 Key Features Summary
+
+- **📄 Document Parsing**: Supports `.pdf`, `.docx`, and `.txt` file uploads.
+- **🤖 Gemini AI Integration**: Deep analysis using Google's latest Gemini AI models (`@google/genai`).
+- **📊 Interactive Analytics**: Recharts visual analytics for ATS performance history.
+- **📂 Google Drive Integration**: Browse, import, and save documents directly to Google Drive.
+- **✉️ Gmail Outreach**: Seamless email creation and sending via Google OAuth.
+- **💼 Social Enrichment**: Automatic skill & project extraction from GitHub and LinkedIn.
 
 ---
 
@@ -135,6 +141,8 @@ Open your browser and navigate to `http://localhost:3000` (or the port specified
 
 ```
 Gmail-Suite/
+├── docs/
+│   └── screenshots/                # Application screenshots for README
 ├── server.ts                       # Express backend server with Vite middleware & API proxy
 ├── src/
 │   ├── App.tsx                     # Main application layout and state manager
