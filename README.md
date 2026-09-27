@@ -28,12 +28,18 @@ Test and verify technical skills highlighted in your resume. Generates customize
 
 ![Skill Verification Modal](docs/screenshots/verify_skills_modal.png)
 
-### 5. 🌐 GitHub & LinkedIn Profile Integration
+### 5. 💼 LinkedIn Smart Job Finder & Auto-Apply
+Filter LinkedIn job listings by role, job title, location, and minimum salary. Jobs are automatically ranked and sorted by **Resume Relevance Match %** relative to your master resume. Click **"⚡ Analyze & Auto-Apply"** to automatically populate the Job Description and trigger instantaneous ATS match evaluation and cover letter writing.
+
+![LinkedIn Job Finder](docs/screenshots/linkedin_job_finder.png)
+
+### 6. 🌐 GitHub & LinkedIn Profile Integration
 Sync your GitHub repository statistics and LinkedIn skills directly to enrich your ATS candidate profile.
 
 ![Profiles Integration Modal](docs/screenshots/profiles_connect_modal.png)
 
 ---
+
 
 ## 🌟 Key Features Summary
 

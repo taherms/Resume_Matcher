@@ -32,3 +32,26 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     return false;
   }
 }
+
+const STOPWORDS = new Set([
+  'the', 'and', 'for', 'with', 'that', 'this', 'into', 'from', 'your', 'have', 'will',
+  'about', 'over', 'after', 'been', 'were', 'what', 'when', 'where', 'through', 'their',
+  'there', 'than', 'then', 'they', 'them', 'themself', 'its', "it's", 'you', 'our', 'us', 'was',
+  'were', 'are', 'is', 'not', 'but', 'can', 'could', 'should', 'would', 'must', 'may', 'also',
+  'using', 'used', 'across', 'within', 'without', 'under', 'throughout', 'based', 'role', 'job',
+  'team', 'work', 'high', 'level', 'years', 'year', 'experience', 'experienced'
+]);
+
+export function extractKeywords(input: string): string[] {
+  return Array.from(
+    new Set(
+      (input || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9+#./\s-]/g, ' ')
+        .split(/\s+/)
+        .map((token) => token.trim())
+        .filter((token) => token.length > 2 && !STOPWORDS.has(token))
+    )
+  );
+}
+

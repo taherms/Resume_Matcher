@@ -66,3 +66,35 @@ export interface ATSEvaluationResult {
   coverLetter: CoverLetterData;
   emailDraft: EmailDraftData;
 }
+
+export interface LinkedInJob {
+  id: string;
+  title: string;
+  company: string;
+  companyLogoUrl?: string;
+  location: string;
+  jobType: 'Remote' | 'Hybrid' | 'Onsite' | 'Full-time' | 'Contract';
+  payRange: string;
+  minPay?: number;
+  maxPay?: number;
+  postedDate: string;
+  experienceLevel: 'Entry' | 'Mid' | 'Senior' | 'Lead' | 'Executive';
+  description: string;
+  requiredSkills: string[];
+  matchedSkills?: string[];
+  missingSkills?: string[];
+  relevanceScore?: number;
+  linkedInUrl?: string;
+  hiringManager?: string;
+}
+
+export interface JobSearchFilters {
+  role: string;
+  title: string;
+  location: string;
+  minPay: number;
+  jobType: string;
+  experienceLevel: string;
+  sortBy: 'relevance' | 'pay' | 'date';
+}
+

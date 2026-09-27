@@ -21,6 +21,7 @@ import {
   Linkedin,
   Sun,
   Moon,
+  Building2,
 } from 'lucide-react';
 import { ScoreOverview } from './components/ScoreOverview';
 import { ResumeViewer } from './components/ResumeViewer';
@@ -29,12 +30,14 @@ import { DriveManager } from './components/DriveManager';
 import { ResumePreviewModal } from './components/ResumePreviewModal';
 import { SkillVerificationModal } from './components/SkillVerificationModal';
 import { SocialProfileManager } from './components/SocialProfileManager';
+import { LinkedInJobFinder } from './components/LinkedInJobFinder';
 import { GitHubProfileData } from './services/githubService';
 import { LinkedInProfileData } from './services/linkedinService';
-import { ATSEvaluationResult, EvaluationRunRecord, MasterResumeProfile, ResumeIterationRecord } from './types';
+import { ATSEvaluationResult, EvaluationRunRecord, MasterResumeProfile, ResumeIterationRecord, LinkedInJob } from './types';
 import { SAMPLE_JOB_DESCRIPTION, SAMPLE_MASTER_RESUME } from './sampleData';
 import { getOrCreateAppFolder, listFolderFiles, DriveFileItem, uploadTextFileToDrive } from './services/workspace';
 import { parseDocxToText } from './utils/docxUtils';
+
 
 declare global {
   interface Window {
@@ -130,8 +133,12 @@ export default function App() {
   const [result, setResult] = useState<ATSEvaluationResult | null>(null);
   const [evaluationHistory, setEvaluationHistory] = useState<EvaluationRunRecord[]>([]);
 
+  // Main page view (ATS Workstation vs LinkedIn Job Finder)
+  const [mainView, setMainView] = useState<'workstation' | 'job_finder'>('workstation');
+
   // Active view tab
   const [activeTab, setActiveTab] = useState<'overview' | 'resume' | 'cover_email' | 'drive'>('overview');
+
 
   // Helper to build MasterResumeProfile trees from drive files
   const buildProfilesFromFiles = (files: DriveFileItem[]) => {
@@ -333,8 +340,18 @@ export default function App() {
   };
 
   // Run the evaluation and increment versioning
-  const handleRunEvaluation = async (customConfirmed?: string[], customExcluded?: string[]) => {
-    if (!jobDescription.trim() || !masterResume.trim()) {
+  const handleRunEvaluation = async (
+    customConfirmed?: string[],
+    customExcluded?: string[],
+    overrideJd?: string,
+    overrideCompany?: string,
+    overrideHiringManager?: string
+  ) => {
+    const activeJd = overrideJd !== undefined ? overrideJd : jobDescription;
+    const activeCompany = overrideCompany !== undefined ? overrideCompany : companyName;
+    const activeHiringManager = overrideHiringManager !== undefined ? overrideHiringManager : hiringManagerName;
+
+    if (!activeJd.trim() || !masterResume.trim()) {
       setEvaluationError('Please provide both the Job Description and your Master Resume.');
       return;
     }
@@ -350,10 +367,10 @@ export default function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          jobDescription,
+          jobDescription: activeJd,
           masterResume,
-          hiringManagerName,
-          companyName,
+          hiringManagerName: activeHiringManager,
+          companyName: activeCompany,
           userNotes,
           confirmedSkills: activeConfirmed,
           excludedSkills: activeExcluded,
@@ -361,6 +378,7 @@ export default function App() {
       });
 
       if (!response.ok) {
+
         const errorData = await response.json();
         throw new Error(errorData.error || 'Evaluation failed.');
       }
@@ -498,7 +516,24 @@ export default function App() {
     }
   };
 
+  const handleApplyLinkedInJob = (job: LinkedInJob) => {
+    setJobDescription(job.description);
+    setCompanyName(job.company);
+    if (job.hiringManager) {
+      setHiringManagerName(job.hiringManager);
+    }
+    setMainView('workstation');
+
+    // Automatically trigger ATS Evaluation with the selected job details
+    setTimeout(() => {
+      handleRunEvaluation(confirmedSkillsList, excludedSkillsList, job.description, job.company, job.hiringManager || '');
+      const workstation = document.getElementById('workstation-section');
+      if (workstation) workstation.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 150);
+  };
+
   const handleSelectResumeFromDrive = (content: string, fileName: string, masterResumeId?: string) => {
+
     setMasterResume(content);
     if (masterResumeId) {
       setSelectedMasterId(masterResumeId);
@@ -649,8 +684,46 @@ export default function App() {
           onPreviewIterationContent={handlePreviewIteration}
         />
 
-        {/* Input Workstation Section */}
-        <div id="workstation-section" className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 backdrop-blur-md shadow-xl">
+        {/* Navigation View Selector: ATS Match Engine vs LinkedIn Smart Job Finder */}
+        <div className="flex flex-wrap items-center gap-3 border-b border-slate-800/80 pb-2">
+          <button
+            onClick={() => setMainView('workstation')}
+            className={`px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 border ${
+              mainView === 'workstation'
+                ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white border-indigo-400 shadow-lg shadow-indigo-600/25'
+                : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            <Briefcase className="w-4 h-4 text-indigo-300" />
+            <span>ATS Resume Workstation & Evaluation</span>
+          </button>
+
+          <button
+            onClick={() => setMainView('job_finder')}
+            className={`px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center gap-2 border ${
+              mainView === 'job_finder'
+                ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white border-blue-400 shadow-lg shadow-blue-600/25'
+                : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            <Building2 className="w-4 h-4 text-blue-400" />
+            <span>LinkedIn Smart Job Finder</span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold hidden sm:inline">
+              Sorted by Resume Match
+            </span>
+          </button>
+        </div>
+
+        {mainView === 'job_finder' ? (
+          <LinkedInJobFinder
+            masterResume={masterResume}
+            onApplyJob={handleApplyLinkedInJob}
+          />
+        ) : (
+          <>
+            {/* Input Workstation Section */}
+            <div id="workstation-section" className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 backdrop-blur-md shadow-xl">
+
           <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-800">
             <div>
               <div className="flex items-center gap-2">
@@ -901,7 +974,10 @@ export default function App() {
             )}
           </div>
         )}
-      </main>
+      </>
+    )}
+  </main>
+
 
       {/* Skill Verification & Anti-Hallucination Modal */}
       {result && (

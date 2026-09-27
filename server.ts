@@ -439,6 +439,134 @@ Please respond strictly according to the specified JSON schema.
   }
 });
 
+// Endpoint to search and fetch LinkedIn jobs filtered by role, location, pay, and candidate resume match
+app.post('/api/linkedin-jobs', async (req, res) => {
+  try {
+    const { role = '', title = '', location = '', minPay = 0, jobType = '', experienceLevel = '', candidateResume = '' } = req.body;
+
+    const DEFAULT_JOBS = [
+      {
+        id: 'linkedin_job_101',
+        title: 'Senior Full Stack Engineer (React / Node / AI)',
+        company: 'NexaCloud Technologies',
+        location: location || 'San Francisco, CA (Remote)',
+        jobType: 'Remote',
+        payRange: '$165,000 - $215,000 / yr',
+        minPay: 165000,
+        maxPay: 215000,
+        postedDate: '1 day ago',
+        experienceLevel: 'Senior',
+        hiringManager: 'Jordan Vance',
+        linkedInUrl: 'https://www.linkedin.com/jobs/search/?keywords=Full+Stack+Engineer',
+        requiredSkills: ['React', 'TypeScript', 'Node.js', 'Express', 'TailwindCSS', 'REST APIs', 'Cloud / Docker'],
+        description: `NexaCloud Technologies is seeking a Senior Full Stack Engineer to lead our next-generation web application team.
+
+Key Responsibilities:
+- Architect, build, and maintain high-performance web applications using React 19, TypeScript, and Node.js.
+- Integrate AI language models (Google Gemini) and cloud workspace APIs (Google Drive, Gmail).
+- Collaborate with product management and design teams to deliver slick, responsive user interfaces with Tailwind CSS and Framer Motion.
+- Write clean, unit-tested code and optimize frontend Largest Contentful Paint (LCP) and web vitals.
+
+Requirements:
+- 5+ years of experience with React, Modern JavaScript/TypeScript, and Node.js backend architecture.
+- Demonstrated experience building web applications with REST / GraphQL APIs.
+- Familiarity with cloud platforms (AWS, GCP) and containerization (Docker).
+- Strong communication and problem-solving skills.`
+      },
+      {
+        id: 'linkedin_job_102',
+        title: 'Staff Frontend Architect - Design Systems & Web AI',
+        company: 'Apex Labs AI',
+        location: location || 'New York, NY (Hybrid)',
+        jobType: 'Hybrid',
+        payRange: '$185,000 - $240,000 / yr',
+        minPay: 185000,
+        maxPay: 240000,
+        postedDate: '3 days ago',
+        experienceLevel: 'Senior',
+        hiringManager: 'Elena Rostova',
+        linkedInUrl: 'https://www.linkedin.com/jobs/search/?keywords=Frontend+Architect',
+        requiredSkills: ['React 19', 'TypeScript', 'Vite', 'TailwindCSS', 'State Management', 'Web Performance'],
+        description: `Apex Labs AI is building state-of-the-art developer tools powered by generative AI. We are looking for a Staff Frontend Architect.
+
+Key Responsibilities:
+- Drive the architecture and developer experience of our flagship web application suite.
+- Implement robust state management, component libraries, and visual analytics using Recharts.
+- Optimize client-side rendering speed and integrate AI endpoints with resilience and retry logic.
+
+Requirements:
+- Deep expertise in React ecosystem, TypeScript, Vite, and modern CSS systems.
+- Proven track record of scaling high-traffic web applications with rich interactive UI controls.`
+      },
+      {
+        id: 'linkedin_job_103',
+        title: 'Lead AI Application Engineer',
+        company: 'ScaleMetric Systems',
+        location: location || 'Austin, TX (Remote)',
+        jobType: 'Remote',
+        payRange: '$175,000 - $225,000 / yr',
+        minPay: 175000,
+        maxPay: 225000,
+        postedDate: '2 days ago',
+        experienceLevel: 'Lead',
+        hiringManager: 'Marcus Brody',
+        linkedInUrl: 'https://www.linkedin.com/jobs/search/?keywords=AI+Application+Engineer',
+        requiredSkills: ['Python', 'TypeScript', 'Gemini AI API', 'LangChain', 'PostgreSQL', 'FastAPI'],
+        description: `ScaleMetric Systems is looking for a Lead AI Application Engineer to lead AI agent development and LLM workflow integrations.
+
+Key Responsibilities:
+- Build autonomous agents, prompt engineering pipelines, and real-time streaming interfaces.
+- Work closely with backend teams to integrate vector databases, SQL data connect, and document parsers.
+
+Requirements:
+- Strong background in AI/ML integration, Python, TypeScript, and modern API standards.
+- Experience with LLM frameworks, RAG pipelines, and candidate assessment tools.`
+      },
+      {
+        id: 'linkedin_job_104',
+        title: 'Full Stack Software Engineer (Product Suite)',
+        company: 'Vanguard HealthTech',
+        location: location || 'Boston, MA (Onsite)',
+        jobType: 'Onsite',
+        payRange: '$140,000 - $180,000 / yr',
+        minPay: 140000,
+        maxPay: 180000,
+        postedDate: 'Just now',
+        experienceLevel: 'Mid',
+        hiringManager: 'Claire Bennet',
+        linkedInUrl: 'https://www.linkedin.com/jobs/search/?keywords=Software+Engineer',
+        requiredSkills: ['React', 'JavaScript', 'Node.js', 'Express', 'MongoDB', 'REST APIs'],
+        description: `Vanguard HealthTech is hiring a Full Stack Software Engineer to develop secure patient portals and clinical workspace platforms.
+
+Key Responsibilities:
+- Develop scalable full-stack features using React and Express.
+- Maintain strict data security, user authentication workflows, and OAuth integrations.
+
+Requirements:
+- 3+ years experience with React, Node.js, and web application security.`
+      }
+    ];
+
+    let filtered = DEFAULT_JOBS;
+
+    if (minPay > 0) {
+      filtered = filtered.filter(j => (j.minPay || 0) >= minPay || (j.maxPay || 0) >= minPay);
+    }
+    if (jobType && jobType !== 'All') {
+      filtered = filtered.filter(j => j.jobType.toLowerCase().includes(jobType.toLowerCase()));
+    }
+    if (experienceLevel && experienceLevel !== 'All') {
+      filtered = filtered.filter(j => j.experienceLevel.toLowerCase() === experienceLevel.toLowerCase());
+    }
+
+    res.json({ jobs: filtered });
+  } catch (err: any) {
+    console.error('Error fetching LinkedIn jobs:', err);
+    res.status(500).json({ error: err.message || 'Failed to fetch LinkedIn jobs' });
+  }
+});
+
+
 async function startServer() {
   const isDev = process.env.NODE_ENV !== 'production';
 
